@@ -1,4 +1,6 @@
 require 'minitest/unit'
+require 'minitest/autorun'
+
 require './lib/acts_as_bayes'
 class Foo
   include Mongoid::Document
