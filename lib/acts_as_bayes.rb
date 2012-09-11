@@ -13,15 +13,18 @@ module ActsAsBayes
   module ClassMethods
     #usage:
     # hash as parameter or/and block
-    def acts_as_bayes(opts = {})
+    def acts_as_bayes(opts = {},&block)
       send :include, InstanceMethods
-      opts.merge({:field=>"rank",:threshold=>1.5})
-      yield if block_given?
-      class_eval do
-        define_method(:threshold) do   
-          opts[:threshold]
+      opts.merge!({:field=>:rank,:threshold=>1.5})
+      yield(opts) if block_given?
+      instance_eval <<-EOC
+        field :field=>"#{opts[:field]}".to_sym,:type=>Float
+      EOC
+      class_eval <<-EOF
+        def threshold
+          #{opts[:threshold]}
         end
-      end
+      EOF
     end
   end
 end
