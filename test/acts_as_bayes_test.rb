@@ -20,12 +20,15 @@ class TestActsAsBayesTest < MiniTest::Unit::TestCase
   end
   
   def test_acts_as_bayes_with_params_I
-    klass = Foo.class_eval do
+    klass = Foo.instance_eval do
       acts_as_bayes :threshold=>1.0
       self
     end
     assert ! klass.nil?
-  #  assert klass.threshold,1.0
+    assert klass.new.class, Foo
+    k = klass.new
+    assert ! k.threshold.nil?
+    assert k.threshold, 1.0
   end
   
   #def test_acts_as_bayes_with_params_I

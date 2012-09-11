@@ -5,20 +5,23 @@ require "acts_as_bayes/version"
 
 module ActsAsBayes
   def self.included(base)
-      base.send :extend, ClassMethods
-      base.send :attr_reader, :threshold      
+      base.extend ClassMethods
+      base.send :attr_accessor, :threshold
   end
   module InstanceMethods
-    
   end
   module ClassMethods
     #usage:
     # hash as parameter or/and block
     def acts_as_bayes(opts = {})
-      send :include, InstanceMethods      
-      opts.merge!({:field=>"rank",:threshold=>1.5})
+      send :include, InstanceMethods
+      opts.merge({:field=>"rank",:threshold=>1.5})
       yield if block_given?
-      instance_variable_set(:@threshold, 1.5)
+      class_eval do
+        define_method(:threshold) do   
+          opts[:threshold]
+        end
+      end
     end
   end
 end
