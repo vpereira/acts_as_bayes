@@ -9,9 +9,13 @@ module ActsAsBayes
   def self.included(base)
       base.extend ClassMethods
       base.send :attr_accessor, :threshold
+      
   end
 
   module InstanceMethods
+    #TODO
+    #maybe should we do it thru MAP & REDUCE?
+    #maybe the output collection should be a relation with the base class
     def word_count
       words = field_to_calculate.gsub(/[^\w\s]/,"").split
       d = Hash.new
@@ -35,9 +39,8 @@ module ActsAsBayes
       opts.merge!({:field=>:words,:threshold=>1.5,:on=>:title})
       yield(opts) if block_given?
       instance_eval <<-EOC
-        field :"#{opts[:field]}",:type=>Hash,:default=>{}
         before_save :word_count
-
+        field :"#{opts[:field]}",:type=>Hash,:default=>{}
       EOC
       class_eval <<-EOF
        def field_to_calculate

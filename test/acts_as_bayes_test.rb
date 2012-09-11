@@ -37,6 +37,8 @@ class TestActsAsBayesTest < MiniTest::Unit::TestCase
     k = klass.new(:title=>"my super foo is sexy")
     assert ! k.threshold.nil?
     assert k.threshold, 1.0
+    assert k.respond_to?:words
+    assert k.words.class,Array
     assert k.save
   end
 end
