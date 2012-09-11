@@ -18,7 +18,27 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In your Model, add it:
+
+     class Foo
+       include Mongoid::Document
+       include ActsAsBayes
+       
+       field :title, :type=>String, :default=>""
+       acts_as_bayes :on=>:title
+     end
+
+Now as soon as you update a document, we calculate the frequency of
+words and then Lorem ipsum dolor sit amet, consectetur clamat pars.
+Remota et neque ingeniis ipsas. Collegerunt octo summum et invidiosum.
+Beate ut viderent defensionis procul modo propositum autem, quosdam,
+animadverti insitam modo beate seditiose nec. 
+
+     Foo.create!(:title=>"wow, that is sexy, right?)
+     Foo.last.words => [:wow=>1, :sex=>1, :right=>1]
+## TODO
+
+write a TODO
 
 ## Contributing
 
