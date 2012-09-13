@@ -32,10 +32,14 @@ module ActsAsBayes
       self.words = d
     end
 
+    def probability(category)
+      doc_probability(category) * BayesCategory.where(:category=>category).first.probability(self.class.send(:count))
+    end
+
     #probability method
     #doc_probability
     #probability that a document belongs to a category
-    def probability(category)
+    def doc_probability(category)
       doc_prob = 1.0
       self.words.each do |word|
         doc_prob *= BayesCategory.where(:category=>category).first.word_probability(word[0])

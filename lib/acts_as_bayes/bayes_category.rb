@@ -17,6 +17,12 @@ class BayesCategory
     end
   end
 
+  #category probability
+  #total_docs = your acts_as_bayes model total
+  def probability(total_docs = 1)
+    self.num_docs / total_docs.to_f
+  end
+
   #warning
   #you must save it yourself
   def sum_count(word,count = 0)
