@@ -15,7 +15,6 @@ class BayesCategory
     wordz.each do |w,c|
       self.words.has_key?(w) ? self.words[w] += c : self.words[w] = c
     end
-    save
   end
 
   #warning
