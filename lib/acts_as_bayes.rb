@@ -4,7 +4,6 @@ require 'stemmer'
 require "acts_as_bayes/version"
 require "acts_as_bayes/common_words"
 require "acts_as_bayes/bayes_category"
-require "acts_as_bayes/classifier"
 
 module ActsAsBayes
 
