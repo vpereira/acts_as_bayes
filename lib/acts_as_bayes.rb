@@ -3,13 +3,16 @@ require "mongoid"
 require 'stemmer'
 require "acts_as_bayes/version"
 require "acts_as_bayes/common_words"
+require "acts_as_bayes/bayes_category"
+require "acts_as_bayes/classifier"
 
 module ActsAsBayes
+
 
   def self.included(base)
       base.extend ClassMethods
       base.send :attr_accessor, :threshold
-      
+      base.send :before_save, :word_count
   end
 
   module InstanceMethods
@@ -29,6 +32,26 @@ module ActsAsBayes
       end
       self.words = d
     end
+
+    #probability method
+    #doc_probability
+    #probability that a document belongs to a category
+    def probability(category)
+      doc_prob = 1.0
+      self.words.each do |word|
+        doc_prob *= BayesCategory.where(:category=>category).first.word_probability(word[0])
+      end
+      doc_prob
+    end
+
+    #classify method
+    def classifiy(default = 'unknown')
+
+    end
+    #train method
+    def train(category)
+
+    end
   end
 
   module ClassMethods
@@ -39,7 +62,6 @@ module ActsAsBayes
       opts.merge!({:field=>:words,:threshold=>1.5,:on=>:title})
       yield(opts) if block_given?
       instance_eval <<-EOC
-        before_save :word_count
         field :"#{opts[:field]}",:type=>Hash,:default=>{}
       EOC
       class_eval <<-EOF
