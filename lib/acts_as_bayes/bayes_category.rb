@@ -3,11 +3,19 @@ class BayesCategory
   field :category, :type=>String
   field :words, :type=>Hash, :default=>{}
   field :word_count, :type=>Integer, :default=>0
-
+  field :num_docs, :type=>Integer, :default=>0
   before_save :update_word_count
 
   def word_probability(word)
     words[word.stem].to_f + 1 / self.word_count.to_f
+  end
+
+  #words is a hash "word"=>count
+  def words_update(wordz)
+    wordz.each do |w,c|
+      self.words.has_key?(w) ? self.words[w] += c : self.words[w] = c
+    end
+    save
   end
 
   #warning
@@ -22,6 +30,6 @@ class BayesCategory
 
   private
   def update_word_count
-   self.word_count = words.values.inject.inject(:+)
+   self.word_count = self.words.values.inject(:+)
   end
 end

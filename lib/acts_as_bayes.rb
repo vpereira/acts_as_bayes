@@ -43,13 +43,25 @@ module ActsAsBayes
       doc_prob
     end
 
+    #get a list of probabilities that a document belongs to a category
+    def probabilities
+      Hash[ BayesCategory.all.to_a.collect { |word|
+                [word.category, probability(word.category)]
+      }]
+    end
+
     #classify method
     def classifiy(default = 'unknown')
-
+      #implement it
     end
     #train method
     def train(category)
-
+      #implement it
+      #We should update the num_of_docs
+      c = BayesCategory.find_or_initialize_by(:category=>category)
+      c.inc(:num_docs,1)
+      c.words_update(self.words)
+      c.save
     end
   end
 
@@ -64,6 +76,10 @@ module ActsAsBayes
         field :"#{opts[:field]}",:type=>Hash,:default=>{}
       EOC
       class_eval <<-EOF
+
+       def words_field
+         #{opts[:field]}
+       end
        def field_to_calculate
          #{opts[:on]}
        end
