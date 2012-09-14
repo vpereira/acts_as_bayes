@@ -4,6 +4,9 @@ TODO: Bayes Classification added to your model
 
 Status: unstable but under development
 
+Travis:
+[![Build Status](https://secure.travis-ci.org/vpereira/acts_as_bayes.png)](http://travis-ci.org/vpereira/acts_as_bayes)
+
 ## Installation
 
 Add this line to your application's Gemfile:
