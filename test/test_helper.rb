@@ -1,6 +1,6 @@
 require 'minitest/unit'
 require 'minitest/autorun'
-
+require 'minitest/should'
 require './lib/acts_as_bayes'
 
 #STOLEN FROM MONGOID

@@ -24,7 +24,7 @@ class TestActsAsBayesTest < MiniTest::Unit::TestCase
       self
     end
     assert ! klass.nil?
-    assert klass.new.respond_to?(:threshold)
+    #assert klass.new.respond_to?(:threshold)
     #assert klass.new.threshold,1.5
   end
   def test_acts_as_bayes_with_params_I
@@ -32,11 +32,9 @@ class TestActsAsBayesTest < MiniTest::Unit::TestCase
       acts_as_bayes :threshold=>1.0,:on=>:title
       self
     end
-    assert ! klass.nil?
-    assert klass.new.class, Foo
     k = klass.new(:title=>"my super foo is sexy")
-    assert ! k.threshold.nil?
-    assert k.threshold, 1.0
+    #assert ! k.threshold.nil?
+    #assert k.threshold, 1.0
     assert k.respond_to?:words
     assert k.words.class,Array
     assert k.save

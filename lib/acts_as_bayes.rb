@@ -10,7 +10,6 @@ module ActsAsBayes
 
   def self.included(base)
       base.extend ClassMethods
-      base.send :attr_accessor, :threshold
       base.send :before_save, :word_count
   end
 
@@ -58,7 +57,7 @@ module ActsAsBayes
     def classifiy(default = 'unknown')
       sorted = probabilities(document).sort {|a,b| a[1]<=>b[1]}
       best,second_best = sorted.pop, sorted.pop
-      return best[0] if best[1]/second_best[1] > @threshold
+      return best[0] if best[1]/second_best[1] > self.class.threshold
       default
     end
     #train method
@@ -81,19 +80,18 @@ module ActsAsBayes
       yield(opts) if block_given?
       instance_eval <<-EOC
         field :"#{opts[:field]}",:type=>Hash,:default=>{}
-      EOC
+        def threshold
+          #{opts[:threshold]}
+        end
+       EOC
       class_eval <<-EOF
-
        def words_field
          #{opts[:field]}
        end
        def field_to_calculate
          #{opts[:on]}
        end
-       def threshold
-          #{opts[:threshold]}
-        end
-      EOF
+     EOF
     end
   end
 end
