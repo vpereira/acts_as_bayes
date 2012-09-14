@@ -16,4 +16,10 @@ class TestBayesCategory < MiniTest::Should::TestCase
     assert @b.word_count > 0
     assert @b.word_count == 30
   end
+
+  should "sum_count" do
+    assert @b.sum_count("foo",10)
+    @b.words["foo"] == 20
+  end
+ 
 end
