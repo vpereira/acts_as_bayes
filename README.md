@@ -1,6 +1,8 @@
 # ActsAsBayes
 
-TODO: Write a gem description
+TODO: Bayes Classification added to your model
+
+Status: unstable but under development
 
 ## Installation
 
