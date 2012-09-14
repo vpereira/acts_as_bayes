@@ -6,6 +6,9 @@ class BayesCategory
   field :num_docs, :type=>Integer, :default=>0
   before_save :update_word_count
 
+  index num_docs:1
+  index word_count:1
+
   def word_probability(word)
     words[word.stem].to_f + 1 / self.word_count.to_f
   end
