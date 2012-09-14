@@ -76,7 +76,7 @@ module ActsAsBayes
     # hash as parameter or/and block
     def acts_as_bayes(opts = {},&block)
       send :include, InstanceMethods
-      opts.merge!({:field=>:words,:threshold=>1.5,:on=>:title})
+      opts = {:field=>:words,:threshold=>1.5, :on=>:title}.merge(opts)
       yield(opts) if block_given?
       instance_eval <<-EOC
         field :"#{opts[:field]}",:type=>Hash,:default=>{}
