@@ -2,7 +2,7 @@ require_relative 'test_helper'
 
 class TestActsAsBayesTest < MiniTest::Unit::TestCase
   def setup
-    #Foo.destroy_all
+    Foo.destroy_all
   end
 
   def test_common_words
