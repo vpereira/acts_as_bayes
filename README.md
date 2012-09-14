@@ -41,7 +41,9 @@ There is a class named BayesCategory. it should be populated. You should
 do it
 ## TODO
 
-write a TODO
+# write more tests
+# write a test app using it
+# maybe find a way to use a custom categories model
 
 ## Contributing
 
