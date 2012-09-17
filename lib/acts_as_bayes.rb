@@ -56,8 +56,8 @@ module ActsAsBayes
     #classify method
     def classify(default = 'unknown')
       sorted = probabilities.sort {|a,b| a[1]<=>b[1]}
-      return default if sorted.nil?
       best,second_best = sorted.pop, sorted.pop
+      return default if second_best.nil?
       return best[0] if best[1]/second_best[1] > self.class.threshold
       default
     end

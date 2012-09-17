@@ -31,5 +31,8 @@ class TestWithCustomParams < MiniTest::Should::TestCase
     should "respond to words" do
       assert @klass.new.respond_to?(:words)
     end
+    should "classify as unknown" do
+      assert @klass.new(:title=>"foo bar").classify
+    end
   end
 end
