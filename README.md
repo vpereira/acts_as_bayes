@@ -42,8 +42,10 @@ animadverti insitam modo beate seditiose nec.
      Foo.create!(:title=>"wow, that is sexy, right?)
      Foo.last.words => [:wow=>1, :sex=>1, :right=>1]
 
-There is a class named BayesCategory. it should be populated. You should
-do it
+There is a class named BayesCategory. It will be populated
+automatically. Maybe it would be better to populate it before with train
+data
+
 ## TODO
 
 * write more tests
