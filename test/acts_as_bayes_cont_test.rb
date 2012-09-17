@@ -2,7 +2,7 @@ require_relative 'test_helper'
 class TestWithCustomParams < MiniTest::Should::TestCase
 
   setup do
-    @klass = Foo.class_eval do
+    @klass = Foo.instance_eval do
       acts_as_bayes :field=>:words, :on=>:title, :threshold=>0.5
       self
     end
