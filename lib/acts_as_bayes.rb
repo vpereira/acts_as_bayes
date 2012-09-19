@@ -16,9 +16,21 @@ module ActsAsBayes
 
   module InstanceMethods
     #TODO
-    #maybe should we do it thru MAP & REDUCE?
-    #maybe the output collection should be a relation with the base class
     def word_count
+      if self.word_count_as_map_reduce?
+        word_count_mr
+      else
+        word_count_traditional
+      end
+    end
+
+    #first MapReduce based version
+    #Maybe words should be a relation and we update the relation collection using map_reduce().out(merge:collection)
+    def word_count_mr
+     self.words = Hash[self.class.where(:_id=>id).map_reduce(map,reduce).out(inline:1).collect { |x,y| [ x["_id"],x["value"]["count"] ] }]
+    end
+
+    def word_count_traditional
       words = field_to_calculate.gsub(/[^\w\s]/,"").split
       d = Hash.new
       words.each do |word|
@@ -78,7 +90,7 @@ module ActsAsBayes
     # hash as parameter or/and block
     def acts_as_bayes(opts = {},&block)
       send :include, InstanceMethods
-      opts = {:wc_mp=>false,:field=>:words,:threshold=>1.5, :on=>:title}.merge(opts)
+      opts = {:wc_mr=>false,:field=>:words,:threshold=>1.5, :on=>:title}.merge(opts)
       yield(opts) if block_given?
       instance_eval <<-EOC
         field :"#{opts[:field]}",:type=>Hash,:default=>{}
@@ -86,7 +98,7 @@ module ActsAsBayes
           #{opts[:threshold]}
         end
         def word_count_as_map_reduce?
-         #{opts[:wc_mp]}
+         #{opts[:wc_mr]}
         end
       EOC
       class_eval <<-EOF

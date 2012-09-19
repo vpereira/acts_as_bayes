@@ -2,6 +2,14 @@ require_relative 'common_words'
 
 module MapReduce
 
+  #TO RUN IT WE WOULD NEED:
+  #map = MapReduce::word_count("title")
+  #reduce = MapReduce::word_count_reduce
+  #to generate inline results
+  #MyModel.map_reduce(map,reduce).out(inline:1)
+  #to update one object
+  #x = MyModel.where(:_id=>id).map_reduce(map, reduce).out(inline:1)
+  #Hash[x.collect { |x,y| [x["_id"],x["value"]["count"]] } ]
   def self.word_count(field)
      #TODO
      #COMMON WORDS should be here
