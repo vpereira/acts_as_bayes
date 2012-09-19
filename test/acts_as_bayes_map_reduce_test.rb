@@ -17,6 +17,11 @@ class TestMapReduceFunctions < MiniTest::Should::TestCase
     it "should respond to word_count_reduce" do
       assert @klass.respond_to?(:word_count_reduce)
     end
+
+    it "should create a new document" do
+      assert @klass.create(:title=>"I love MapReduce. It is fast, clever and makes me smarter")
+      assert ! @klass.last.words.empty?
+    end
    end
 
 end

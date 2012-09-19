@@ -46,6 +46,10 @@ There is a class named BayesCategory. It will be populated
 automatically. Maybe it would be better to populate it before with train
 data
 
+if you want to use Map Reduce, you must add to your application.rb:
+
+     config.mongoid.observers = :acts_as_bayes_observer
+
 ## TODO
 
 * write more tests

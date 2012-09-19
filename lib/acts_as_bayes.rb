@@ -8,7 +8,6 @@ require "acts_as_bayes/map_reduce"
 
 module ActsAsBayes
 
-
   def self.included(base)
       base.extend ClassMethods
       base.send :before_save, :word_count
@@ -17,7 +16,9 @@ module ActsAsBayes
   module InstanceMethods
     #TODO
     def word_count
-      if self.word_count_as_map_reduce?
+
+      #if using as map reduce, we will handle it via observers
+      if self.class.word_count_as_map_reduce?
         word_count_mr
       else
         word_count_traditional
@@ -27,10 +28,11 @@ module ActsAsBayes
     #first MapReduce based version
     #Maybe words should be a relation and we update the relation collection using map_reduce().out(merge:collection)
     def word_count_mr
-     self.words = Hash[self.class.where(:_id=>id).map_reduce(map,reduce).out(inline:1).collect { |x,y| [ x["_id"],x["value"]["count"] ] }]
+     self.words = Hash[doc.class.where(:_id=>self.id).map_reduce(MapReduce::word_count("title"),MapReduce::word_count_reduce).out(inline:1).collect { |x,y| [ x["_id"],x["value"]["count"] ] }]
     end
 
     def word_count_traditional
+      puts "Somebody is calling me FUCK!"
       words = field_to_calculate.gsub(/[^\w\s]/,"").split
       d = Hash.new
       words.each do |word|

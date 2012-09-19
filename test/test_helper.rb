@@ -34,6 +34,7 @@ Mongoid.configure do |config|
      config.connect_to database_id
 end
 
+
 class Foo
   include Mongoid::Document
   include ActsAsBayes
