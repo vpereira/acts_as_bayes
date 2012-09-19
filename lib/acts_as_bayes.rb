@@ -4,6 +4,7 @@ require 'stemmer'
 require "acts_as_bayes/version"
 require "acts_as_bayes/common_words"
 require "acts_as_bayes/bayes_category"
+require "acts_as_bayes/map_reduce"
 
 module ActsAsBayes
 
@@ -77,14 +78,17 @@ module ActsAsBayes
     # hash as parameter or/and block
     def acts_as_bayes(opts = {},&block)
       send :include, InstanceMethods
-      opts = {:field=>:words,:threshold=>1.5, :on=>:title}.merge(opts)
+      opts = {:wc_mp=>false,:field=>:words,:threshold=>1.5, :on=>:title}.merge(opts)
       yield(opts) if block_given?
       instance_eval <<-EOC
         field :"#{opts[:field]}",:type=>Hash,:default=>{}
         def threshold
           #{opts[:threshold]}
         end
-       EOC
+        def word_count_as_map_reduce?
+         #{opts[:wc_mp]}
+        end
+      EOC
       class_eval <<-EOF
        def words_field
          #{opts[:field]}
