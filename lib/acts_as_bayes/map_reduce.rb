@@ -12,13 +12,15 @@ module MapReduce
         //TODO
         //use the field above 
         // maybe it could be multiple fields?
-        var common_words = new Array(#{common_words.map(&:inspect).join(',')});
+        common_words = new Array(#{common_words.map(&:inspect).join(',')});
         var words = #{tokenize_str};
-        if (words == null)
+        if(words == null)
           return;
         //loop every word in the document 
         for(var i = 0; i < words.length; i++)
         {
+          //check if its a common word
+          if(common_words.indexOf(words[i]) == -1)
             emit(words[i], { count : 1 });
         }
       }
