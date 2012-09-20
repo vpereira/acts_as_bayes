@@ -74,11 +74,9 @@ module ActsAsBayes
     end
     #train method
     def train(category)
-      #if you are training. you know what you are doing
-      #stating from rails 3.1
-      #update_column doesnt fire callbacks
-      self.update_column(:category,category)
-      #implement it
+      self.class.skip_callback :save,:before, :automatic_classifier
+      self.update_attribute(:category,category)
+      self.class.set_callback :save,:before, :automatic_classifier
       #We should update the num_of_docs
       c = BayesCategory.find_or_initialize_by(:category=>category)
       c.inc(:num_docs,1)
