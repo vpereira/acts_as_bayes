@@ -11,9 +11,15 @@ module ActsAsBayes
   def self.included(base)
       base.extend ClassMethods
       base.send :before_save, :word_count
+      base.send :before_save, :automatic_classifier
   end
 
   module InstanceMethods
+
+    def automatic_classifier
+      self.category = self.classify
+    end
+
     #TODO
     #first MapReduce based version
     #Maybe words should be a relation and we update the relation collection using map_reduce().out(merge:collection)
@@ -68,6 +74,8 @@ module ActsAsBayes
     end
     #train method
     def train(category)
+      #if you are training. you know what you are doing
+      self.category = category; self.save
       #implement it
       #We should update the num_of_docs
       c = BayesCategory.find_or_initialize_by(:category=>category)
@@ -88,10 +96,11 @@ module ActsAsBayes
       #field = where in your model, you will store the words (its an array)
       #cb_off = if you want to disable the callbacks (probably to run everything async using jobs
       #threshold = threshold from bayes. everything under this threshold will be classified as "unknown"
-      opts = {:wc_mr=>false,:field=>:words,:threshold=>1.5, :on=>:title,:cb_off=>false}.merge(opts)
+      opts = {:wc_mr=>false,:field=>:words,:threshold=>1.5, :on=>:title,:cb_off=>false, :category_field=>:category}.merge(opts)
       yield(opts) if block_given?
       instance_eval <<-EOC
-        field :"#{opts[:field]}",:type=>Hash,:default=>{}
+        field :"#{opts[:field].to_sym}",:type=>Hash,:default=>{}
+        field :"#{opts[:category_field].to_sym}",:type=>String,:default=>"unknown"
         def threshold
           #{opts[:threshold]}
         end
