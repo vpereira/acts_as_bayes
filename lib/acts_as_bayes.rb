@@ -15,24 +15,14 @@ module ActsAsBayes
 
   module InstanceMethods
     #TODO
-    def word_count
-
-      #if using as map reduce, we will handle it via observers
-      if self.class.word_count_as_map_reduce?
-        word_count_mr
-      else
-        word_count_traditional
-      end
-    end
-
     #first MapReduce based version
     #Maybe words should be a relation and we update the relation collection using map_reduce().out(merge:collection)
+    #Not Being used
     def word_count_mr
-     self.words = Hash[doc.class.where(:_id=>self.id).map_reduce(MapReduce::word_count("title"),MapReduce::word_count_reduce).out(inline:1).collect { |x,y| [ x["_id"],x["value"]["count"] ] }]
+     self.words = Hash[self.class.where(:_id=>self.id).map_reduce(MapReduce::word_count("title"),MapReduce::word_count_reduce).out(inline:1).collect { |x,y| [ x["_id"],x["value"]["count"].to_i ] }]
     end
 
-    def word_count_traditional
-      puts "Somebody is calling me FUCK!"
+    def word_count
       words = field_to_calculate.gsub(/[^\w\s]/,"").split
       d = Hash.new
       words.each do |word|
@@ -92,12 +82,21 @@ module ActsAsBayes
     # hash as parameter or/and block
     def acts_as_bayes(opts = {},&block)
       send :include, InstanceMethods
-      opts = {:wc_mr=>false,:field=>:words,:threshold=>1.5, :on=>:title}.merge(opts)
+      #TODO
+      #rename those options
+      #wc_mr = if you want to run the word_count with map & reduce
+      #field = where in your model, you will store the words (its an array)
+      #cb_off = if you want to disable the callbacks (probably to run everything async using jobs
+      #threshold = threshold from bayes. everything under this threshold will be classified as "unknown"
+      opts = {:wc_mr=>false,:field=>:words,:threshold=>1.5, :on=>:title,:cb_off=>false}.merge(opts)
       yield(opts) if block_given?
       instance_eval <<-EOC
         field :"#{opts[:field]}",:type=>Hash,:default=>{}
         def threshold
           #{opts[:threshold]}
+        end
+        def cb_off?
+          #{opts[:cb_off]}
         end
         def word_count_as_map_reduce?
          #{opts[:wc_mr]}
@@ -111,6 +110,11 @@ module ActsAsBayes
          #{opts[:on]}
        end
      EOF
+    end
+    def word_count_map_reduce
+     Hash[self.all.map_reduce(
+       MapReduce::word_count("title"),MapReduce::word_count_reduce
+     ).out(inline:1).collect { |x,y| [ x["_id"],x["value"]["count"].to_i ] }]
     end
   end
 end
